@@ -1,0 +1,41 @@
+*.class
+*.log
+.idea/
+target/
+null/
+*/.cache-main
+*/.cache-tests
+*/.classpath
+*/.gitignore
+*/.project
+*/.settings
+.terraform
+*.proto
+time_zones.csv
+version.sbt
+application.conf
+.bsp/
+
+# functional tests
+ft/
+ftout/
+
+# jvm options
+.jvmopts
+
+# exclude temporary files from functional test
+container.mapping.txt
+test.log
+
+# Metals and Bloop
+.vscode
+.metals
+.bloop
+metals.sbt
+
+# python
+__pycache__
+
+#heap dumps
+java_pid*
+.envrc

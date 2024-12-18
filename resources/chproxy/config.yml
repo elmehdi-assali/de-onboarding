@@ -1,0 +1,30 @@
+server:
+  http:
+    listen_addr: "0.0.0.0:9090"
+
+hack_me_please: true
+
+users:
+  - name: "default"
+    to_cluster: "clickhouse-dev"
+    to_user: "default"
+    password: ""
+    cache: "longterm_cache"
+
+clusters:
+  - name: clickhouse-dev
+    scheme: http
+    replicas:
+      - name: "replica_1"
+        nodes: ["clickhouse:8123"]
+    users:
+      - name: "default"
+        password: ""
+
+caches:
+  - name: "longterm_cache"
+    dir: "/data/disk_00/cache/longterm_cache"
+    max_size: 10G
+    expire: 1h
+    grace_time: 20s
+

@@ -1,0 +1,47 @@
+version: '3'
+services:
+  zookeeper:
+    image: harbor.eu-west-1.csq.io/docker-hub/confluentinc/cp-zookeeper:5.0.2
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: ERROR
+    healthcheck:
+      test: "echo stat | nc zookeeper 2181"
+      interval: 2s
+      timeout: 20s
+      retries: 120
+
+  chproxy:
+    image: tacyuuhon/clickhouse-chproxy:1.13.2-1
+    ports:
+      - 9090:9090
+    restart: always
+    volumes:
+      - ./resources/chproxy/config.yml:/opt/config.yml
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    healthcheck:
+      test: "curl http://localhost:9090/metrics"
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  clickhouse:
+    image: harbor.eu-west-1.csq.io/docker-hub/yandex/clickhouse-server:21.3.13.9-alpine
+    hostname: "clickhouse-dev"
+    volumes:
+      - ./resources/clickhouse/confdb:/etc/clickhouse-server/config.d
+      - ./resources/clickhouse/initdb:/docker-entrypoint-initdb.d
+      - ./resources/clickhouse/data/data.csv:/data.csv
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - 8123:8123
+    healthcheck:
+      test: clickhouse-client --query "select count(1) from sessions"
+      interval: 2s
+      timeout: 20s
+      retries: 10

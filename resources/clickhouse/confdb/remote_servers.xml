@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<yandex>
+    <listen_host>0.0.0.0</listen_host>
+    <listen_try>0</listen_try>
+    <remote_servers>
+        <clickhouse-dev>
+            <shard>
+                <weight>1</weight>
+                <internal_replication>false</internal_replication>
+                <replica>
+                    <host>localhost</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password></password>
+                </replica>
+            </shard>
+        </clickhouse-dev>
+        <system>
+            <shard>
+                <weight>1</weight>
+                <internal_replication>false</internal_replication>
+                <replica>
+                    <host>localhost</host>
+                    <port>9000</port>
+                    <user>default</user>
+                    <password></password>
+                </replica>
+            </shard>
+        </system>
+    </remote_servers>
+</yandex>

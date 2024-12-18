@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<yandex>
+    <macros>
+        <shard>1</shard>
+        <layer>5</layer>
+        <replica>localhost</replica>
+        <project_name>clickhouse-dev</project_name>
+        <cluster_name>clickhouse-dev</cluster_name>
+        <env>local</env>
+    </macros>
+</yandex>
