@@ -14,6 +14,7 @@ val akkaVersion = "2.6.20"
 val akkaHttpVersion = "10.2.10"
 val tapirVersion = "1.1.3"
 val clickhouse4sVersion = "v21.3.13.65-alpha"
+val prometheusVersion = "1.3.5"
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
@@ -25,6 +26,11 @@ libraryDependencies ++= Seq(
 
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
   "ch.qos.logback" % "logback-classic" % "1.4.12",
+
+  "io.prometheus" % "prometheus-metrics-core" % prometheusVersion,
+  "io.prometheus" % "prometheus-metrics-exporter-httpserver" % prometheusVersion,
+  "io.prometheus" % "prometheus-metrics-instrumentation-jvm" % prometheusVersion,
+
 
   "com.contentsquare" %% "clickhouse4s" % clickhouse4sVersion
     exclude ("io.circe", "circe-core_" ++ scalaVersionMajor)

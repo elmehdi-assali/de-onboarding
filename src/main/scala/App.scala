@@ -1,4 +1,4 @@
-import Settings.{ClickHouseConfig, ServerConfig}
+import Settings.{ClickHouseConfig, MonitoringConfig, ServerConfig}
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.headers.BasicHttpCredentials
@@ -8,12 +8,13 @@ import com.contentsquare.clickhousedriver.clickhouse.client.http.ClickHouseHttpC
 import com.contentsquare.clickhousedriver.clickhousequery.driver.query.QueryPrinterSettings
 import com.typesafe.scalalogging.StrictLogging
 import controllers._
+import io.prometheus.metrics.exporter.httpserver.HTTPServer
+import io.prometheus.metrics.instrumentation.jvm.JvmMetrics
 import routes._
 import services.ViewsService
-import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.akkahttp.AkkaHttpServerInterpreter
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.ExecutionContextExecutor
 
 object App extends App with StrictLogging {
   implicit val actorSystem: ActorSystem = ActorSystem()
@@ -31,13 +32,17 @@ object App extends App with StrictLogging {
     new PingPongRoute(new PingPongController),
     new ViewsRoute(new ViewsController(new ViewsService()))
   )
-  val endpoints: List[ServerEndpoint[Any, Future]] = routes.flatMap(route => route.endpoints)
-
-  val server = Http()
+  Http()
     .newServerAt(ServerConfig.host, ServerConfig.port)
-    .bind(AkkaHttpServerInterpreter().toRoute(endpoints))
+    .bind(AkkaHttpServerInterpreter().toRoute(routes.flatMap(route => route.endpoints)))
+    .map { serverBinding =>
+      logger.info("API server running on {}", serverBinding.localAddress)
+    }
 
-  server.map { serverBinding =>
-    logger.info(s"Listening on ${serverBinding.localAddress}")
-  }
+  JvmMetrics.builder().register()
+  val server = HTTPServer
+    .builder()
+    .port(MonitoringConfig.port)
+    .buildAndStart()
+  logger.info("Monitoring server running on 0.0.0.0:{}", server.getPort)
 }

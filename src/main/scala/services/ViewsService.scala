@@ -10,7 +10,7 @@ import com.contentsquare.clickhousedriver.clickhousequery.driver.expr.methods.Ex
 }
 import com.contentsquare.clickhousedriver.clickhousequery.driver.expr.{Column, NamedExpr}
 import com.contentsquare.clickhousedriver.clickhousequery.driver.query.CHSetting.DistributedGroupByNoMerge
-import com.contentsquare.clickhousedriver.clickhousequery.driver.query.{QueryPrinterSettings, SelectQuery}
+import com.contentsquare.clickhousedriver.clickhousequery.driver.query.QueryPrinterSettings
 import com.contentsquare.clickhousedriver.clickhousequery.driver.query.SelectQuery.select
 
 import java.time.ZonedDateTime
